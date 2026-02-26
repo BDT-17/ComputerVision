@@ -1,340 +1,216 @@
-# \# Colonoscopy Polyp Segmentation Report
+# BKAI ColonFormer - Colonoscopy Polyp Segmentation
+
+## Overview
+
+This is a colonoscopy polyp segmentation solution using the ColonFormer model. The project aims to detect and segment polyps in colonoscopy images, helping physicians in the diagnosis and treatment of colorectal diseases.
+
+## 🎯 Objectives
+
+- Detect and segment colorectal polyps from colonoscopy images
+- Support physicians in diagnosing and treating colorectal pathologies
+- Leverage modern Transformer architecture to improve accuracy
+
+## 📊 Results
+
+The model achieves:
+- **Average Dice: 0.4505 ± 0.0392**
+- **Average IoU: 0.4145 ± 0.0636**
+- **Best Dice: 0.4870**
+- **Precision: 0.8547**
+- **Recall: 0.9047**
+
+## 🏗️ Project Structure
+
+```
+BKAI_ColonFormer/
+├── BKAI_ColonFormer.ipynb      # Main notebook
+├── data/                        # Train/val/test data
+│   ├── train/images/
+│   ├── train/masks/
+│   ├── val/images/
+│   ├── val/masks/
+│   └── test/test/
+├── models/                      # Saved models
+└── submission.csv              # Submission results
+```
+
+## 📦 Environment Requirements
+
+### Main Libraries:
+```
+PyTorch >= 1.9.0
+torchvision >= 0.10.0
+numpy
+pandas
+opencv-python (cv2)
+matplotlib
+scikit-learn
+albumentations
+```
+
+### Installation
+
+```bash
+pip install torch torchvision
+pip install numpy pandas opencv-python matplotlib scikit-learn
+pip install albumentations
+```
+
+### GPU Requirements
+- Notebook is designed for Google Colab with T4 GPU
+- Can run on other GPUs (RTX, A100, etc.)
+
+## 🚀 How to Use
+
+### 1. Prepare Data
+
+Data should be organized as follows:
+```
+data/
+├── train/
+│   ├── images/      (original images)
+│   └── masks/       (segmentation masks)
+├── val/
+│   ├── images/
+│   └── masks/
+└── test/
+    └── test/        (test images)
+```
+
+### 2. Run Training
+
+Open the `BKAI_ColonFormer.ipynb` notebook on Google Colab or Jupyter:
+
+```python
+# The notebook will automatically:
+# 1. Load data
+# 2. Initialize model
+# 3. Train the model
+# 4. Evaluate on validation set
+# 5. Generate submission
+```
+
+### 3. Inference on Test Set
+
+```python
+model.eval()
+pred = model(test_image)
+pred_mask = pred.argmax(dim=1)
+```
+
+### 4. Generate Submission
 
-# 
+The notebook automatically creates a `submission.csv` file containing predictions in RLE encoding format.
 
-# \## Introduction
+## 🔧 Main Components
 
-# This is a LaTeX template for the report "Colonoscopy Polyp Segmentation Using Deep Learning" by Group 42, University of Science and Technology of Hanoi.
+### Model (ColonFormer)
+- Transformer architecture designed for medical image segmentation
+- Encoder-Decoder with attention mechanism
+- Supports multi-class segmentation (Background, Polyp Type 1, Polyp Type 2)
 
-# 
+### Data Augmentation
+Using `albumentations` library:
+- Random rotation, flip
+- Color jittering
+- Elastic transform
+- Grid distortion
 
-# \## File Structure
+### Loss Function
+- Dice Loss
+- Cross Entropy Loss (can be weighted)
 
-# ```
+### Metrics
+- Dice Score
+- IoU (Intersection over Union)
+- Precision & Recall
 
-# colonoscopy\_fixed.tex          # Main LaTeX file
+## 📈 Training Process
 
-# README.md                       # This guide
+1. **Data Loading**: Load images and masks from directories
+2. **Augmentation**: Apply data augmentation to training set
+3. **Model Training**: Train with learning rate scheduler
+4. **Validation**: Evaluate on validation set
+5. **Prediction**: Inference on test set
+6. **Post-processing**: Resize predictions to original image size
 
-# ```
+## 🎨 Key Features
 
-# 
+✅ Multi-class segmentation (3 classes)  
+✅ RLE encoding for submission  
+✅ Automatic model checkpointing  
+✅ Detailed evaluation metrics  
+✅ Visualization support  
+✅ GPU acceleration  
 
-# \## Required Images
+## 📝 Output Format
 
-# To compile successfully, prepare the following image files and place them in the same directory as the .tex file:
+The `submission.csv` file has the following format:
+```csv
+id,predicted
+image_id_1,<RLE_encoded_mask>
+image_id_2,<RLE_encoded_mask>
+...
+```
 
-# 
+RLE (Run Length Encoding) is a compression format widely used in Kaggle competitions.
 
-# \- \*\*usth.png\*\* - USTH Logo
+## ⚙️ Hyperparameter Tuning
 
-# \- \*\*637266958\_2151000069002670\_8489864047731370573\_n.png\*\* - U-net architecture diagram
+Hyperparameters that can be adjusted in the notebook:
+- **Learning Rate**: Controls learning speed
+- **Batch Size**: Batch size (depends on GPU memory)
+- **Epochs**: Number of training epochs
+- **Weight Decay**: Regularization parameter
+- **Warmup Steps**: Number of warmup steps
 
-# \- \*\*output.png\*\* - Training curves chart
+## 🐛 Troubleshooting
 
-# \- \*\*1.png\*\* - Qualitative segmentation results
+### Out of Memory (OOM)
+- Reduce batch size
+- Decrease input image size
 
-# \- \*\*preb2.png\*\* - Visualization example case 1
+### Low Accuracy
+- Increase number of epochs
+- Adjust learning rate
+- Check data augmentation settings
 
-# \- \*\*preb3.png\*\* - Visualization example case 2
+### Slow Training
+- Use a more powerful GPU
+- Reduce image resolution
 
-# 
+## 📚 References
 
-# \## Usage Guide
+- ColonFormer paper: [Link if available]
+- PyTorch Documentation: https://pytorch.org/docs/
+- Segmentation Metrics: https://en.wikipedia.org/wiki/Dice_coefficient
 
-# 
+## 👥 Contributing
 
-# \### Option 1: Overleaf (Recommended)
+If you want to improve the project:
+1. Fork the repository
+2. Create a branch for your feature
+3. Commit your changes
+4. Push and create a Pull Request
 
-# 1\. Visit \[overleaf.com](https://www.overleaf.com)
+## 📄 License
 
-# 2\. Create new project → "Upload Project"
+[Specify license if applicable]
 
-# 3\. Copy all content from `colonoscopy\_fixed.tex`
+## 📧 Contact
 
-# 4\. Upload all image files
+[Add contact information if needed]
 
-# 5\. Compile and download PDF
+---
 
-# 
+**Note**: This project is primarily designed to run on Google Colab. To run locally, you'll need a GPU and proper dependency installation.
 
-# \### Option 2: Local (Your Computer)
+## 🎓 Next Steps
 
-# 1\. Install LaTeX (TexLive, MiKTeX, or MacTeX)
+1. Optimize hyperparameters
+2. Try different data augmentation techniques
+3. Ensemble with other models
+4. Apply test-time augmentation (TTA)
+5. Fine-tune with pre-trained models
 
-# 2\. Copy `colonoscopy\_fixed.tex` and all images to a folder
-
-# 3\. Compile:
-
-# &nbsp;  ```bash
-
-# &nbsp;  pdflatex colonoscopy\_fixed.tex
-
-# &nbsp;  ```
-
-# 4\. PDF will be generated automatically
-
-# 
-
-# \## Report Structure
-
-# 
-
-# \### Page 1 (Title Page)
-
-# \- USTH Logo
-
-# \- Title: Colonoscopy Polyp Segmentation Using Deep Learning
-
-# \- Group Information:
-
-# &nbsp; - Bui Duc Thang -- 23BI14400
-
-# &nbsp; - Le Quoc Anh -- 23BI14022
-
-# &nbsp; - Nguyen Hoang Lan -- 23BI14392
-
-# \- Department \& University
-
-# \- Date
-
-# 
-
-# \### Pages 2+
-
-# \- Table of Contents
-
-# \- Abstract
-
-# \- Main Sections:
-
-# &nbsp; - Introduction
-
-# &nbsp; - Related Work
-
-# &nbsp; - Dataset
-
-# &nbsp; - Data Preprocessing
-
-# &nbsp; - Data Augmentation
-
-# &nbsp; - Neural Network Architecture
-
-# &nbsp; - Loss Functions
-
-# &nbsp; - Training Strategy
-
-# &nbsp; - Evaluation Metrics
-
-# &nbsp; - Experimental Results
-
-# &nbsp; - Discussion
-
-# &nbsp; - Limitations
-
-# &nbsp; - Future Work
-
-# &nbsp; - Conclusion
-
-# &nbsp; - References
-
-# 
-
-# \## Features Fixed
-
-# 
-
-# ✅ \*\*Logo \& Title on Page 1\*\* - All author information on single page  
-
-# ✅ \*\*No Image Misalignment\*\* - Uses `\[H]` placement and 0.7-0.9 linewidth  
-
-# ✅ \*\*Professional Layout\*\* - Header/Footer, page numbers, proper spacing  
-
-# ✅ \*\*Multi-class Segmentation\*\* - Supports 3 classes: Background, Neoplastic, Non-neoplastic  
-
-# ✅ \*\*Hybrid Loss Function\*\* - Dice Loss + Focal Loss  
-
-# ✅ \*\*Complete Metrics\*\* - IoU, mIoU, Dice, Recall  
-
-# 
-
-# \## Customization
-
-# 
-
-# \### Change Group/Authors
-
-# Find and replace:
-
-# ```latex
-
-# {\\large \\textbf{Group 42}}
-
-# 
-
-# Bui Duc Thang -- 23BI14400 \\\\
-
-# Le Quoc Anh -- 23BI14022 \\\\
-
-# Nguyen Hoang Lan -- 23BI14392
-
-# ```
-
-# 
-
-# \### Change Date
-
-# ```latex
-
-# \\today  % Auto-generates today's date
-
-# % or
-
-# 26 February 2026  % Manual entry
-
-# ```
-
-# 
-
-# \### Adjust Image Size
-
-# ```latex
-
-# \\includegraphics\[width=0.9\\linewidth]{image.png}  % Reduce 0.9 to 0.7, 0.8, etc.
-
-# ```
-
-# 
-
-# \### Add New Section
-
-# ```latex
-
-# \\section{Section Name}
-
-# Section content here
-
-# ```
-
-# 
-
-# \## Troubleshooting
-
-# 
-
-# \### Error: Image not found
-
-# \- Ensure all image files are in the same directory as the .tex file
-
-# \- Check file names match exactly (case-sensitive)
-
-# \- Verify file extensions (.png)
-
-# 
-
-# \### Images appear cut off
-
-# \- Reduce width value: change `0.9\\linewidth` to `0.8\\linewidth` or lower
-
-# \- Use `\[H]` placement specifier for better positioning
-
-# 
-
-# \### Compilation errors
-
-# \- Ensure all required packages are installed
-
-# \- Check for missing closing braces `}`
-
-# \- Verify all `\\begin{}` have matching `\\end{}`
-
-# 
-
-# \### Header/Footer not showing
-
-# \- Confirm `\\pagestyle{fancy}` is set before `\\begin{document}`
-
-# \- Make sure page style isn't overridden by `\\thispagestyle{empty}`
-
-# 
-
-# \## Packages Used
-
-# 
-
-# \- `graphicx` - Image insertion
-
-# \- `amsmath, amssymb` - Math equations
-
-# \- `hyperref` - Hyperlinks
-
-# \- `booktabs` - Professional tables
-
-# \- `geometry` - Page margins
-
-# \- `setspace` - Line spacing
-
-# \- `caption, subcaption` - Figure captions
-
-# \- `fancyhdr` - Headers and footers
-
-# \- `float` - Float placement control `\[H]`
-
-# 
-
-# \## Document Properties
-
-# 
-
-# \- \*\*Font Size\*\*: 11pt
-
-# \- \*\*Paper Size\*\*: A4
-
-# \- \*\*Line Spacing\*\*: 1.3x
-
-# \- \*\*Margins\*\*: 2.5cm on all sides
-
-# \- \*\*Language\*\*: English
-
-# 
-
-# \## Tips \& Best Practices
-
-# 
-
-# 1\. \*\*Always backup\*\* your .tex file before major edits
-
-# 2\. \*\*Use consistent\*\* section naming and formatting
-
-# 3\. \*\*Check spelling\*\* before final compilation
-
-# 4\. \*\*Compress images\*\* to reduce PDF file size
-
-# 5\. \*\*Test compilation\*\* after each major change
-
-# 6\. \*\*Use meaningful\*\* figure labels for cross-references
-
-# 
-
-# \## Contact \& Support
-
-# 
-
-# For issues with the LaTeX template, ensure:
-
-# \- All image files are present
-
-# \- File names match exactly
-
-# \- You're using a compatible LaTeX compiler
-
-# \- All required packages are installed
-
-# 
-
-# \## License
-
-# 
-
-# This template is provided as-is for educational purposes.
-
+**Happy Segmenting! 🏥**
