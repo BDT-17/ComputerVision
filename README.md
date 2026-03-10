@@ -193,13 +193,11 @@ If you want to improve the project:
 3. Commit your changes
 4. Push and create a Pull Request
 
-## 📄 License
 
-[Specify license if applicable]
 
 ## 📧 Contact
 
-[Add contact information if needed]
+buiducthang2005@gmail.com
 
 ---
 
